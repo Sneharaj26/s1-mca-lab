@@ -5,34 +5,46 @@
             <body>
                 <form action="fetchbyroll.php" method="POST">
                     Rollno:<input type="number" name="rollno"/>
-                    <input type="submit">
-                    <button input type="submit">Update</button>
+                    <input type="submit" name="submit">
+                    
 </form>
 </body>
 </html>
 
 <?php
-$con= mysqli_connect('localhost','root', '','student');
-if($con)
+$conn=mysqli_connect('localhost','root','','student');
+if(isset($_POST['submit'])){
+$roll=$_POST['rollno'];
+//$mark=$_POST['mark'];
+$s="select * from student where rollno='$roll'";
+$q=mysqli_query($conn,$s);
+if(mysqli_num_rows($q))
 {
-    echo"connection successful";
+    echo "<html><body><form method='post' action=''>";
+    while($row=mysqli_fetch_assoc($q))
+    {
+        echo "ROLLNO <input type='text' value=".$row['rollno']."  name='rollno' readonly>";
+        echo "NAME <input type='text' value=".$row['name']." disabled>";
+        echo "MARK <input type='text' value=".$row['mark']." name='mark'>";
+    }
+    echo "<input type='submit' value='update' name='Update'>";
+    echo "</form></body></html";
+}
+}
+if(isset($_POST['Update']))
+{
+    $rollno=$_POST['rollno'];
+    $mark=$_POST['mark'];   
+$up="update student set mark='$mark' where rollno='$rollno'";
+echo $up;
+$mq=mysqli_query($conn,$up);
+if($mq)
+{
+    echo "Mark updated";
+
 }
 else{
-    echo"connection failed";
-
+    echo "Mark not updated";
 }
-$rollno= $_POST["rollno"];
-$s= "select * from student where rollno='$rollno'";
-$q=mysqli_query($con,$s);
-if(mysqli_num_rows($q))
-{ 
-    
-
-while($row=mysqli_fetch_assoc($q))
-   {    
-        echo"Rollno:<input type='text' value=' ".$row["rollno"]." 'disabled name='roll1'>";
-        echo"Name:<input type='text' value=' ".$row["name"]." 'disabled name='name1'>";
-        echo"Mark:<input type='text' value=' ".$row["mark"]." 'name='mark1'>";
-   }
 }
-
+?>
